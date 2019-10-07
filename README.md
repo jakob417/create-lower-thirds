@@ -3,18 +3,18 @@
 brief outline:
 
 1. create templates in After Effects  
-in this case 3 templates for lower thirds with 1, 2 or 3 lines
+- in this case 3 templates for lower thirds with 1, 2 or 3 lines
 
 2. write or generate csv file with the data for the lower thirds
-e.g.  
+- e.g.  
 	Switching off your device,  
 	Removing the back cover screws,(pentalobe screws) <- generates lower third with 2 lines  
 	Removing the display,  
 	Disconnecting the display connectors,  
 3. generate csv file with the timings for the lower thirds  
-e.g. in Premiere Pro with chapter marker, should look like this:  
-	Marker Name	Description	In	Out	Duration	Marker Type	 
-	01		00:00:35:16	00:00:35:16	00:00:00:00	Chapter  
+-e.g. in Premiere Pro with chapter marker, should look like this:  
+ -Marker Name	Description	In	Out	Duration	Marker Type	 
+ -01		00:00:35:16	00:00:35:16	00:00:00:00	Chapter  
 4. start the script in After Effects
 5. create folder and composition with "Create Folder"
 6. create the timing for the lower thirds by importing a csv with "Import marker"
