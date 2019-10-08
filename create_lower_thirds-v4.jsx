@@ -17,6 +17,7 @@ function myInput() {
 	var importMarkerButton = wB.add("button", undefined, "Import Marker");
 	var createLowerThirdsButton = wB.add("button", undefined, "Create lower thirds");
 	var rePlaceLowerThirdsButton = wB.add("button", undefined, "(Re-)Place lower thirds");
+	var rePlaceADsButton = wB.add("button", undefined, "(Re-)Place ADs and Infos");
 	var cancel = wC.add("button", undefined, "Close");
 	createFolderAndCompButton.onClick = function() { // trigger functions for the buttons
 		app.beginUndoGroup("create new folder and copy template"); // create script undo group (so you can use cmd+z)
@@ -41,8 +42,48 @@ function myInput() {
 		rePlaceLowerThirds(guide.text);
 		app.endUndoGroup();	
 	}	
+	rePlaceADsButton.onClick = function(){ 
+		app.beginUndoGroup("import and insert marker"); 
+		importAndPlaceADs(guide.text);
+		app.endUndoGroup();	
+	}
+
 	cancel.onClick = function() {w.close();} // close button action
 	w.show();
+}
+function importAndPlaceADs (g){
+	// import csv
+	var pfile = File.openDialog("Please select a CSV file");
+	var encoded_data = '';	
+	if (pfile == null){
+		alert("No csv file selected. ");
+	}else{ var readData = pfile.open("r","TEXT", "????");
+		if(readData){
+			var encoded_data = pfile.read();
+		}else{
+			alert("Problems reading csv file");
+		}
+	}
+	pfile.close();
+	var data = parseCSV(encoded_data); 
+	// place comps
+	for (var j=1; j<=(data.length -1); j++) {
+		if (data[j][5] == "Comment"){
+		markerName = data[j][0];
+		var myMainComp = findComp("lower_thirds iP11-camera-en");
+		var markerTime = currentFormatToTime(data[j][2],myMainComp.frameRate);
+		var myComp = findComp(markerName);
+		myMainComp.layers.add(myComp);
+		myMainComp.layer(markerName).startTime = (markerTime);
+
+		//alert (markerName + "Time:"+ markerTime);
+		//t = currentFormatToTime(data[j][2],myComp.frameRate);
+		//var Marker1Name = new MarkerValue(data[j][0]);
+		//myComp.layer("trigger").property("Marker").setValueAtTime(t, Marker1Name);
+		}
+	}
+
+
 }
 function rePlaceLowerThirds(g){
 	var myComp = findComp("lower_thirds "+ g);
