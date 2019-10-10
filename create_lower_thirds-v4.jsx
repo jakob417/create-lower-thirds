@@ -1,16 +1,38 @@
+// ToDo
+// finalizing ads and info cards
+// adding difficulty and duration
+// selection for guides / guide detection / 
 var pp = app.project;
 myInput();
+var guides = new Array();
 
+function gettingData() {	
+	for (var i = 1; i <= pp.numItems; i++){
+	     // if (pp.item(i) instanceof CompItem && pp.item(i).name == compName){
+	     	if (pp.item(i) instanceof CompItem && pp.item(i).name.substr(0, 13) == "lower_thirds "){
+	        guides.push(pp.item(i).name);
+	        } 
+	  } return null; 
+
+}
+gettingData();
+
+for (i=0; i < guides.length; i++) {
+// alert ("das ist es: " + guides[i]); 
+}
 function myInput() {
 	var w = new Window("palette", "Create lower thirds for video guides"); // create UI
-	w.orientation = "column";
+	w.orientation = "row";
 	var wI = w.add("group");
 	w.alignChildren ="left";
 	var wB = w.add("group");
-	wB.orientation ="row";
+	wB.orientation ="column";
+	wB.alignChildren = "left";
 	var wC = w.add("group");
+	var myList = wI.add ("listbox", undefined, []);
+	myList.preferredSize = [100,200];
 	wI.add("statictext", undefined, "Guide:")
-	var guide = wI.add("edittext", undefined, "Akku");
+	var guide = wI.add("edittext", undefined, "");
 	guide.characters = 12;
 	var language = wI.add("checkbox", undefined, "EN");
 	var createFolderAndCompButton = wB.add("button", undefined, "Create Folder");
@@ -19,6 +41,13 @@ function myInput() {
 	var rePlaceLowerThirdsButton = wB.add("button", undefined, "(Re-)Place lower thirds");
 	var rePlaceADsButton = wB.add("button", undefined, "(Re-)Place ADs and Infos");
 	var cancel = wC.add("button", undefined, "Close");
+
+	
+	for (i=0; i < guides.length; i++) {
+	var myItem = guides[i].substr(13);
+	myList.add("item", myItem);
+	}
+	myList.onChange = function() {guide.text = myList.selection}
 	createFolderAndCompButton.onClick = function() { // trigger functions for the buttons
 		app.beginUndoGroup("create new folder and copy template"); // create script undo group (so you can use cmd+z)
 		createFolder(guide.text);
@@ -70,7 +99,7 @@ function importAndPlaceADs (g){
 	for (var j=1; j<=(data.length -1); j++) {
 		if (data[j][5] == "Comment"){
 		markerName = data[j][0];
-		var myMainComp = findComp("lower_thirds iP11-camera-en");
+		var myMainComp = findComp("lower_thirds "+ g);
 		var markerTime = currentFormatToTime(data[j][2],myMainComp.frameRate);
 		var myComp = findComp(markerName);
 		myMainComp.layers.add(myComp);
@@ -304,3 +333,4 @@ function placeLTs(g) { // obsolete
 	
 }
 } */
+
