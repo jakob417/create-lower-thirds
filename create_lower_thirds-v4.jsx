@@ -5,7 +5,7 @@
 var pp = app.project;
 myInput();
 var guides = new Array();
-
+// get available lower third comps
 function gettingData() {	
 	for (var i = 1; i <= pp.numItems; i++){
 	     // if (pp.item(i) instanceof CompItem && pp.item(i).name == compName){
@@ -16,10 +16,10 @@ function gettingData() {
 
 }
 gettingData();
-
-for (i=0; i < guides.length; i++) {
-// alert ("das ist es: " + guides[i]); 
-}
+// alert for every guide available
+// for (i=0; i < guides.length; i++) {
+// alert ("This guide is available: " + guides[i]); 
+// }
 function myInput() {
 	var w = new Window("palette", "Create lower thirds for video guides"); // create UI
 	w.orientation = "row";
@@ -41,8 +41,6 @@ function myInput() {
 	var rePlaceLowerThirdsButton = wB.add("button", undefined, "(Re-)Place lower thirds");
 	var rePlaceADsButton = wB.add("button", undefined, "(Re-)Place ADs and Infos");
 	var cancel = wC.add("button", undefined, "Close");
-
-	
 	for (i=0; i < guides.length; i++) {
 	var myItem = guides[i].substr(13);
 	myList.add("item", myItem);
@@ -72,7 +70,7 @@ function myInput() {
 		app.endUndoGroup();	
 	}	
 	rePlaceADsButton.onClick = function(){ 
-		app.beginUndoGroup("import and insert marker"); 
+		app.beginUndoGroup("import and (re)place ADs"); 
 		importAndPlaceADs(guide.text);
 		app.endUndoGroup();	
 	}
@@ -81,6 +79,7 @@ function myInput() {
 	w.show();
 }
 function importAndPlaceADs (g){
+	var myMainComp = findComp("lower_thirds "+ g);
 	// import csv
 	var pfile = File.openDialog("Please select a CSV file");
 	var encoded_data = '';	
@@ -95,11 +94,20 @@ function importAndPlaceADs (g){
 	}
 	pfile.close();
 	var data = parseCSV(encoded_data); 
+	// delete previous ADs
+	var myComp = findComp("lower_thirds "+ g);
+	for (var i = myComp.numLayers; i > 0; i--) { // remove all ADs
+	var myItemName = myComp.layer(i).name.substr(0,2);
+	if (myItemName == "ad"){
+	myItem = myComp.layer(i);
+	myItem.remove();
+		}
+	}
 	// place comps
 	for (var j=1; j<=(data.length -1); j++) {
 		if (data[j][5] == "Comment"){
 		markerName = data[j][0];
-		var myMainComp = findComp("lower_thirds "+ g);
+		
 		var markerTime = currentFormatToTime(data[j][2],myMainComp.frameRate);
 		var myComp = findComp(markerName);
 		myMainComp.layers.add(myComp);
