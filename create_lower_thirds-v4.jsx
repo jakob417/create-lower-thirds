@@ -1,25 +1,22 @@
 // ToDo
-// finalizing ads and info cards
+// bug with empty marker
+// inserting lower thirds and ads work differently -> consistent procedure
 // adding difficulty and duration
-// selection for guides / guide detection / 
 var pp = app.project;
-myInput();
 var guides = new Array();
+gettingData();
+myInput();
 // get available lower third comps
 function gettingData() {	
+	
 	for (var i = 1; i <= pp.numItems; i++){
 	     // if (pp.item(i) instanceof CompItem && pp.item(i).name == compName){
 	     	if (pp.item(i) instanceof CompItem && pp.item(i).name.substr(0, 13) == "lower_thirds "){
 	        guides.push(pp.item(i).name);
 	        } 
 	  } return null; 
-
 }
-gettingData();
-// alert for every guide available
-// for (i=0; i < guides.length; i++) {
-// alert ("This guide is available: " + guides[i]); 
-// }
+
 function myInput() {
 	var w = new Window("palette", "Create lower thirds for video guides"); // create UI
 	w.orientation = "row";
@@ -103,24 +100,41 @@ function importAndPlaceADs (g){
 	myItem.remove();
 		}
 	}
+	var adAlert = new Array();
+	// var adAlertMessage = "";
 	// place comps
 	for (var j=1; j<=(data.length -1); j++) {
 		if (data[j][5] == "Comment"){
 		markerName = data[j][0];
-		
+		if (markerName.length > 0) {
 		var markerTime = currentFormatToTime(data[j][2],myMainComp.frameRate);
 		var myComp = findComp(markerName);
-		myMainComp.layers.add(myComp);
-		myMainComp.layer(markerName).startTime = (markerTime);
-
+		
+		if(myComp != null) {
+			myMainComp.layers.add(myComp);
+			myMainComp.layer(markerName).startTime = (markerTime);
+			}
+		else {
+			adAlert.push(markerName);
+			}
+		}		
+		
+ 		 /* 
+		*/
 		//alert (markerName + "Time:"+ markerTime);
 		//t = currentFormatToTime(data[j][2],myComp.frameRate);
 		//var Marker1Name = new MarkerValue(data[j][0]);
 		//myComp.layer("trigger").property("Marker").setValueAtTime(t, Marker1Name);
 		}
+
 	}
-
-
+		if (adAlert.length > 1) {
+			var adAlertMessage = "Ads not found: ";
+			for (i=0; i<adAlert.length;i++) {
+				adAlertMessage = adAlertMessage + '\n' + adAlert[i];
+			}
+			alert(adAlertMessage);
+		} 
 }
 function rePlaceLowerThirds(g){
 	var myComp = findComp("lower_thirds "+ g);
