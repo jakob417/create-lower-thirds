@@ -1,5 +1,4 @@
 // ToDo
-// bug with empty marker
 // inserting lower thirds and ads work differently -> consistent procedure
 // adding difficulty and duration
 var pp = app.project;
@@ -168,12 +167,6 @@ function createFolder(g) { // #works
 }
 
 function importMarker(g) {
-var myComp = findComp("lower_thirds "+ g);
-var keyNumber = myComp.layer("trigger").property("Marker").numKeys; //remove all previous marker
-	for (var i = 1; i <= keyNumber; i++) {
-	    myComp.layer("trigger").property("Marker").removeKey(1);
-		}
-	// temporary solution 
 	var pfile = File.openDialog("Please select a CSV file");
 	var encoded_data = '';	
 	if (pfile == null){
@@ -187,6 +180,13 @@ var keyNumber = myComp.layer("trigger").property("Marker").numKeys; //remove all
 	}
 	pfile.close();
 	var data = parseCSV(encoded_data); 
+var myComp = findComp("lower_thirds "+ g);
+var keyNumber = myComp.layer("trigger").property("Marker").numKeys; //remove all previous marker
+	for (var i = 1; i <= keyNumber; i++) {
+	    myComp.layer("trigger").property("Marker").removeKey(1);
+		}
+	// temporary solution 
+	
 	// end of temporary solution
 	for (var j=1; j<=(data.length -1); j++) {
 		if (data[j][5] == "Chapter"){
